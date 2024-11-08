@@ -1,0 +1,12 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{title}} - 404
+{% endblock %}
+
+{% block body %}
+
+<h1>404</h1>
+<a href="{% url 'index' %}">Back</a>
+
+{% endblock %}
