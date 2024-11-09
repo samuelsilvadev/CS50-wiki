@@ -12,11 +12,6 @@ h1 {
     padding-top: 20px;
 }
 
-textarea {
-    height: 90vh;
-    width: 80%;
-}
-
 .main {
     padding: 10px;
 }
@@ -29,10 +24,22 @@ textarea {
 
 .sidebar {
     background-color: #f0f0f0;
-    height: 100vh;
     padding: 20px;
 }
 
 .sidebar h2 {
     margin-top: 5px;
+}
+
+.main,
+.sidebar {
+    height: 100vh;
+}
+
+textarea.form-control  {
+    resize: none;
+}
+
+.hide {
+    display: none !important;
 }

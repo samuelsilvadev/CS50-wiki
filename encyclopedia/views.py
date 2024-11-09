@@ -48,3 +48,52 @@ def search_by_title(request):
     return render(request, "encyclopedia/index.html", {
         "entries": filtered_entries
     })
+
+
+def _does_title_already_exists(title):
+    return util.get_entry(title) is not None
+
+
+def _create_entry(request):
+    title = request.POST['title']
+    content = request.POST['content']
+
+    if (_does_title_already_exists(title)):
+        return (False, "Title already exists.")
+
+    has_title = title != "" and title is not None
+    has_content = content != "" and content is not None
+
+    if not has_title:
+        return (False, "Title is mandatory")
+
+    if not has_content:
+        return (False, "Content is mandatory")
+
+    try:
+        util.save_entry(title, content)
+
+        return (True, "")
+    except:
+        return (False, "Something went wrong with the saving process.")
+
+
+def new(request):
+    try:
+        if request.method == 'POST':
+            was_successful, failed_reason = _create_entry(request)
+
+            if was_successful:
+                title = request.POST['title']
+
+                return redirect('get_by_title', title)
+            else:
+                return render(request, "encyclopedia/new.html", {
+                    "error": failed_reason or "Failed to save, please try again."
+                })
+        else:
+            return render(request, "encyclopedia/new.html")
+    except:
+        return render(request, "encyclopedia/new.html", {
+            "error": "Failed to save, please try again."
+        })
