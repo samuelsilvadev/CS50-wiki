@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+import markdown2
 
 from . import util
 
@@ -18,7 +19,7 @@ def get_by_title(request, title):
         })
 
     return render(request, "encyclopedia/entry.html", {
-        "entry": util.get_entry(title),
+        "entry": markdown2.markdown(util.get_entry(title)),
         "title": title
     })
 
