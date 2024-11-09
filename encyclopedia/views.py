@@ -79,21 +79,26 @@ def _create_entry(request):
 
 
 def new(request):
+    title = request.POST.get('title', '')
+    content = request.POST.get('content', '')
+
     try:
         if request.method == 'POST':
             was_successful, failed_reason = _create_entry(request)
 
             if was_successful:
-                title = request.POST['title']
-
                 return redirect('get_by_title', title)
             else:
                 return render(request, "encyclopedia/new.html", {
-                    "error": failed_reason or "Failed to save, please try again."
+                    "error": failed_reason or "Failed to save, please try again.",
+                    "title": title,
+                    "content": content
                 })
         else:
             return render(request, "encyclopedia/new.html")
     except:
         return render(request, "encyclopedia/new.html", {
-            "error": "Failed to save, please try again."
+            "error": "Failed to save, please try again.",
+            "title": title,
+            "content": content
         })
