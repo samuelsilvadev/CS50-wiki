@@ -13,11 +13,24 @@
                 <a href="{% url 'edit' %}?q={{title}}">Edit</a>
             </li>
             <li>
+                <a href="{% url 'delete' %}?q={{title}}" data-id="delete">Delete</a>
+            </li>
+            <li>
                 <a href="{% url 'index' %}">Back</a>
             </li>
         </ul>
     </header>
 </section>
+
+<script>
+    document.querySelector('[data-id="delete"]').addEventListener('click', () => {
+        const hasConfirmed = confirm('Are you sure you want to delete this entry?')
+
+        if (!hasConfirmed) {
+            event.preventDefault()
+        }
+    })
+</script>
 
 This is {{entry|safe}}
 

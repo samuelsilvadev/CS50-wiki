@@ -157,6 +157,29 @@ def edit_save(request):
 
 def get_random_entry(_request):
     all_entries = util.list_entries()
-    random_entry_index = random.randint(0, len(all_entries) - 1)
+    size = len(all_entries)
 
-    return redirect('get_by_title', all_entries[random_entry_index])
+    if size > 0:
+        random_entry_index = random.randint(0, size - 1)
+
+        return redirect('get_by_title', all_entries[random_entry_index])
+    else:
+        return redirect('index')
+
+
+def delete(request):
+    title = request.GET.get('q')
+
+    does_title_exists = util.get_entry(title) is not None
+
+    if not does_title_exists:
+        return render(request, "encyclopedia/404.html", {
+            "title": title
+        })
+
+    was_successful = util.delete_entry(title)
+
+    if was_successful:
+        return redirect('index')
+    else:
+        return redirect('get_by_title', title)
