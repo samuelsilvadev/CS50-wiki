@@ -55,11 +55,11 @@ def _does_title_already_exists(title):
     return util.get_entry(title) is not None
 
 
-def _create_entry(request):
+def _save_entry(request, skip_duplicated_title_check=False):
     title = request.POST['title']
     content = request.POST['content']
 
-    if (_does_title_already_exists(title)):
+    if not skip_duplicated_title_check and _does_title_already_exists(title):
         return (False, "Title already exists.")
 
     has_title = title != "" and title is not None
@@ -85,7 +85,7 @@ def new(request):
 
     try:
         if request.method == 'POST':
-            was_successful, failed_reason = _create_entry(request)
+            was_successful, failed_reason = _save_entry(request)
 
             if was_successful:
                 return redirect('get_by_title', title)
@@ -100,6 +100,55 @@ def new(request):
     except:
         return render(request, "encyclopedia/new.html", {
             "error": "Failed to save, please try again.",
+            "title": title,
+            "content": content
+        })
+
+
+def edit(request):
+
+    if request.method == 'POST':
+        return edit_save(request)
+    if request.method == 'GET':
+        return edit_get(request)
+
+
+def edit_get(request):
+    title = request.GET.get('q', '')
+    markdown = util.get_entry(title)
+
+    if markdown is None:
+        return render(request, "encyclopedia/404.html", {
+            "title": title
+        })
+
+    return render(request, "encyclopedia/edit.html", {
+        "content": markdown,
+        "title": title
+    })
+
+
+def edit_save(request):
+    title = request.POST.get('title', '')
+    content = request.POST.get('content', '')
+
+    does_title_exists = util.get_entry(title) is not None
+
+    if not does_title_exists:
+        return render(request, "encyclopedia/edit.html", {
+            "error": "The title you sent does not exists, please do not tamper with the form.",
+            "title": title,
+            "content": content
+        })
+
+    was_successful, failed_reason = _save_entry(
+        request, skip_duplicated_title_check=True)
+
+    if was_successful:
+        return redirect('get_by_title', title)
+    else:
+        return render(request, "encyclopedia/edit.html", {
+            "error": failed_reason or "Failed to save, please try again.",
             "title": title,
             "content": content
         })

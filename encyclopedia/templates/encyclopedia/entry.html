@@ -6,8 +6,19 @@
 
 {% block body %}
 
-This is {{entry|safe}}
+<section>
+    <header>
+        <ul class="entry__header__list">
+            <li>
+                <a href="{% url 'edit' %}?q={{title}}">Edit</a>
+            </li>
+            <li>
+                <a href="{% url 'index' %}">Back</a>
+            </li>
+        </ul>
+    </header>
+</section>
 
-<a href="{% url 'index' %}">Back</a>
+This is {{entry|safe}}
 
 {% endblock %}
