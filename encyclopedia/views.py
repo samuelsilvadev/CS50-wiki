@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 import markdown2
+import random
 
 from . import util
 
@@ -152,3 +153,10 @@ def edit_save(request):
             "title": title,
             "content": content
         })
+
+
+def get_random_entry(_request):
+    all_entries = util.list_entries()
+    random_entry_index = random.randint(0, len(all_entries) - 1)
+
+    return redirect('get_by_title', all_entries[random_entry_index])
